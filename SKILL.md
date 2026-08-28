@@ -6,7 +6,7 @@ related:
   - open-web
   - open-in-devin
   - visualize-in-web
-  - report-html
+  - report-in-html
   - run-build
   - follow-runtime-bun
   - convert-to-git-submodules
@@ -51,7 +51,7 @@ related:
 1. ถ้า target เป็น URL (`http://`, `https://`, `file://`) → ใช้ได้เลย
 2. ถ้า target เป็น absolute path → แปลงเป็น `file://` URL
 3. ถ้า target เป็น relative path → resolve เป็น absolute ก่อน แล้วแปลงเป็น `file://`
-4. ถ้า target เป็น markdown/code และต้องการ syntax highlight → ทำ `/visualize-in-web` หรือ `/report-html` ก่อนเพื่อ render เป็น HTML
+4. ถ้า target เป็น markdown/code และต้องการ syntax highlight → ทำ `/visualize-in-web` หรือ `/report-in-html` ก่อนเพื่อ render เป็น HTML
 5. ถ้า target เป็น directory → ใช้ `file://` URL โดยตรง หรือสร้าง directory index HTML
 
 ### 4. Open In Browser
