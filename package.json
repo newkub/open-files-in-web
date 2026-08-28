@@ -1,0 +1,63 @@
+{
+	"name": "@wrikka/open-web",
+	"version": "1.0.0",
+	"type": "module",
+	"bin": {
+		"open-in-open-terminal": "./dist/index.js"
+	},
+	"dependencies": {
+		"@shikijs/langs": "^4.4.3",
+		"@shikijs/themes": "^4.4.3",
+		"commander": "^15.0.0",
+		"cosmiconfig": "^10.0.0",
+		"markdown-it": "^15.0.0",
+		"markdown-it-anchor": "^9.2.1",
+		"markdown-it-mathjax3": "^5.2.0",
+		"markdown-it-mermaid": "^0.2.5",
+		"markdown-it-toc-done-right": "^4.2.0",
+		"open": "^11.0.0",
+		"playwright-core": "^1.62.1",
+		"shiki": "^4.4.3"
+	},
+	"devDependencies": {
+		"@shikijs/markdown-it": "^4.4.3",
+		"@types/bun": "^1.4.0",
+		"@types/markdown-it": "^14.1.2",
+		"bunup": "^0.16.32",
+		"release-it": "^21.0.2",
+		"typescript": "^7.0.2",
+		"vitest": "^4.1.11"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./cli": {
+			"types": "./dist/presentation/cli/cli.d.ts",
+			"default": "./dist/presentation/cli/cli.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"keywords": [
+		"cli",
+		"open",
+		"open-in-terminal",
+		"runtime:bun"
+	],
+	"scripts": {
+		"dev": "bun run src/index.ts",
+		"build": "bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun && tsc --emitDeclarationOnly",
+		"build:watch": "bunup --watch",
+		"typecheck": "tsc --noEmit",
+		"typecheck:watch": "tsc --noEmit --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"verify": "bun run typecheck && bun run test && bun run build",
+		"deps:analyze": "bunx depcheck",
+		"clean": "bunx rimraf node_modules dist"
+	}
+}
