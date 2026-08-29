@@ -1,4 +1,4 @@
-﻿---
+---
 name: @wrikka/open-web
 description: Workspace @wrikka/open-web
 related:
