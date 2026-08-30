@@ -119,7 +119,11 @@ function getDistPreviewDir(): string {
 	return resolve(findPackageRoot(dirname(fileURLToPath(import.meta.url))), "dist/preview");
 }
 
-export async function previewFile(target: string): Promise<string> {
+interface PreviewOptions {
+	noOpen?: boolean;
+}
+
+export async function previewFile(target: string, options: PreviewOptions = {}): Promise<string> {
 	const absPath = resolve(target);
 	const s = await stat(absPath);
 	const isDir = s.isDirectory();
@@ -155,7 +159,9 @@ export async function previewFile(target: string): Promise<string> {
 	html = html.replace("</head>", `${dataScript}</head>`);
 
 	await writeFile(indexPath, html);
-	await open(indexPath);
+	if (!options.noOpen) {
+		await open(indexPath);
+	}
 
 	return indexPath;
 }

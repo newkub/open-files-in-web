@@ -43,9 +43,10 @@ export const createCli = (): Command => {
 	program
 		.command("preview <path>")
 		.description("Render a local file or directory in a Solid+TanStack preview")
-		.action(async (target) => {
+		.option("--no-open", "Generate preview HTML without opening the browser")
+		.action(async (target, options) => {
 			try {
-				const indexPath = await previewFile(target);
+				const indexPath = await previewFile(target, { noOpen: options.open === false });
 				console.log(`Preview: ${indexPath}`);
 			} catch (error) {
 				console.error("Failed to preview:", error instanceof Error ? error.message : String(error));
