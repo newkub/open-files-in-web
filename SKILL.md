@@ -1,27 +1,31 @@
 ---
 name: open-files-in-web
-description: เปิดไฟล์และ directory ใน web browser โดยใช้ open-web CLI
-argument-hint: "[path-or-url]"
+description: เปิดไฟล์, directory, หรือ URL ใน web browser ด้วย open-in-open-terminal CLI พร้อม preview สวยงาม
+argument-hint: "[path-or-url] | preview [path]"
 related:
   - open-web
   - open-in-devin
   - visualize-in-web
   - report-in-html
+  - create-mermaid-diagram
+  - create-report-in-dot-devin
+  - report-uxui-sketch
+  - draw-svg-image
   - run-build
   - follow-runtime-bun
-  - convert-to-git-submodules
 ---
 
 ## Goal
 
-เปิดไฟล์ หรือ directory ใน web browser โดยแปลงเป็น `file://` URL หรือ render เป็น HTML ก่อน แล้วใช้ `open-web` CLI
+เปิดไฟล์ หรือ directory หรือ URL ใน web browser โดยแปลง local path เป็น `file://` URL หรือ render เป็น HTML preview ก่อน
 
 ## Scope
 
-ใช้กับไฟล์ หรือ directory ที่ต้องการ preview ใน browser
-รองรับ `file://` URL, ไฟล์ทั่วไป, markdown, และ code files
-ต้อง build `open-web` CLI ก่อนใช้งานครั้งแรก
-ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
+- ใช้กับไฟล์, directory, หรือ URL ที่ต้องการ preview ใน browser
+- รองรับ `file://` URL, ไฟล์ทั่วไป, markdown, code files, csv, json, html, image, pdf, และ directory
+- ใช้ SolidJS + TanStack Solid Router previewer พร้อม TOC, syntax highlight, และ Noto Sans Thai
+- สามารถ build เป็น standalone `.exe` ได้
+- ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
 
 ## Execute
 
@@ -36,33 +40,39 @@ related:
 
 ### 2. Build Open-Web CLI
 
-> Goal: build CLI จาก submodule
+> Goal: build CLI
 
 1. cd เข้า `open-files-in-web/`
 2. รัน `bun install` เพื่อติดตั้ง dependencies
-3. รัน `bun run build` เพื่อสร้าง `dist/`
+3. รัน `bun run build` เพื่อสร้าง `dist/preview` และ `dist/presentation/cli/cli.js`
 4. ถ้า build fail → ทำ `/resolve-errors` แล้ว retry สูงสุด 3 ครั้ง
 5. cd กลับมา skills directory
 
-### 3. Resolve Target
+### 3. Open URL Or Local Path
 
-> Goal: แปลง target เป็น URL ที่ browser เปิดได้
+> Goal: เปิด URL, local file, หรือ directory ใน browser
 
 1. ถ้า target เป็น URL (`http://`, `https://`, `file://`) → ใช้ได้เลย
 2. ถ้า target เป็น absolute path → แปลงเป็น `file://` URL
 3. ถ้า target เป็น relative path → resolve เป็น absolute ก่อน แล้วแปลงเป็น `file://`
-4. ถ้า target เป็น markdown/code และต้องการ syntax highlight → ทำ `/visualize-in-web` หรือ `/report-in-html` ก่อนเพื่อ render เป็น HTML
-5. ถ้า target เป็น directory → ใช้ `file://` URL โดยตรง หรือสร้าง directory index HTML
+4. ใช้ `bun dist/presentation/cli/cli.js <url-or-path>` หรือ `dist/open-in-open-terminal.exe <url-or-path>`
 
-### 4. Open In Browser
+### 4. Preview Local Files
 
-> Goal: เปิด URL ใน browser
+> Goal: render ไฟล์เป็น HTML preview ก่อนเปิด
 
-1. ใช้ `bun open-files-in-web/dist/presentation/cli/cli.js <url>` หรือ `bunx open-in-open-terminal <url>`
-2. ถ้า CLI ไม่ทำงาน → ใช้ `open <url>` หรือ `start <url>` เป็น fallback
-3. ตรวจสอบว่า browser เปิด URL ถูกต้อง
+1. ใช้ `bun dist/presentation/cli/cli.js preview <path>` หรือ `dist/open-in-open-terminal.exe preview <path>`
+2. CLI จะสร้าง temp preview directory, copy assets, ฝัง metadata, แล้วเปิด `index.html` โดยตรง (ไม่ต้องใช้ server)
+3. รองรับ markdown, code, image, pdf, csv, json, html, และ directory
 
-### 5. Verify And Report
+### 5. Build Standalone .exe
+
+> Goal: สร้าง executable สำหรับใช้โดยไม่ต้องมี bun
+
+1. รัน `bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-terminal.exe`
+2. ใช้ `.exe` เปิดไฟล์หรือ preview ได้ทันที
+
+### 6. Verify And Report
 
 > Goal: ยืนยันว่าเปิดสำเร็จและไม่มี error
 
@@ -77,7 +87,6 @@ related:
 
 - ต้อง build ก่อนใช้งานครั้งแรกหรือหลัง pull/clone
 - `bun install` ต้องผ่านก่อน `bun run build`
-- ถ้า submodule ยังไม่ initial → รัน `git submodule update --init --recursive`
 
 ### 2. URL Safety
 
@@ -90,16 +99,16 @@ related:
 - ถ้า CLI ยังไม่ build หรือ fail → ใช้ `open`, `start`, `xdg-open` เป็น fallback
 - ถ้า file ไม่สามารถ render ได้ → เปิดดิบด้วย `file://`
 
-### 4. Submodule
+### 4. Preview Output
 
-- `open-files-in-web` เป็น git submodule ของ `open-web` project
-- ถ้า update submodule → รัน `git submodule update --remote open-files-in-web` แล้ว commit
-- ไม่แก้ไข code ใน `open-files-in-web/` ผ่าน skill นี้โดยตรง ให้ใช้ `/deep-refactor` หรือ `/refactor` ถ้าต้องการ
+- preview สร้างไฟล์ชั่วคราวใน `os.tmpdir()`
+- สำหรับ compiled `.exe` จะหา preview assets จาก `dist/preview` ข้าง ๆ executable
+- ไฟล์ preview เปิดผ่าน `file://` โดยตรง ไม่ต้อง server
 
 ## Expected Outcome
 
 - Browser เปิด target ตามที่ต้องการ
-- `open-web` CLI ทำงานได้
+- CLI และ `.exe` ทำงานได้
 - ไม่มี broken references หลังการ build
 - มีรายงาน target และ URL ที่ใช้เปิด
 - มี next action ชัดเจนหลังใช้งาน
