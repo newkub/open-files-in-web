@@ -242,37 +242,73 @@ body {
 	font-size: 0.9rem;
 }
 
-.image-viewer,
-.pdf-frame,
-.html-frame {
-	max-width: 100%;
+.image-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 200px;
+	max-height: 85vh;
+	padding: 1rem;
+	background: var(--bg);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
-	background: var(--bg);
+}
+
+.image-viewer {
+	display: block;
+	max-width: 100%;
+	max-height: calc(85vh - 2rem);
+	height: auto;
+	object-fit: contain;
 }
 
 .pdf-frame,
 .html-frame {
 	width: 100%;
 	height: 85vh;
-}
-
-.image-viewer {
-	display: block;
-	margin: 0 auto;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--bg);
 }
 
 .directory-list {
 	list-style: none;
 	padding: 0;
+	margin: 0;
 }
 
-.directory-list li {
+.directory-item {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
 	padding: 0.5rem 0.75rem;
 	background: var(--surface-2);
 	border: 1px solid var(--border);
 	border-radius: 6px;
 	margin: 0.4rem 0;
+	transition: background 0.15s ease;
+}
+
+.directory-item:hover {
+	background: var(--bg);
+}
+
+.directory-icon {
+	font-size: 1.1rem;
+	line-height: 1;
+}
+
+.directory-link {
+	color: var(--text);
+	text-decoration: none;
+	font-family: var(--mono);
+	font-size: 0.9rem;
+	word-break: break-all;
+}
+
+.directory-link:hover {
+	color: var(--accent);
+	text-decoration: underline;
 }
 
 .unknown-viewer {

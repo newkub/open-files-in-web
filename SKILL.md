@@ -64,8 +64,10 @@ related:
 > Goal: render ไฟล์เป็น HTML preview ก่อนเปิด
 
 1. ใช้ `bun dist/presentation/cli/cli.js preview <path>` หรือ `dist/open-in-open-terminal.exe preview <path>`
-2. CLI จะสร้าง temp preview directory, copy assets, ฝัง metadata, แล้วเปิด `index.html` โดยตรง (ไม่ต้องใช้ server)
-3. รองรับ markdown, code, image, pdf, csv, json, html, และ directory
+2. CLI จะสร้าง temp preview directory, copy assets, ฝัง metadata, สตาร์ท HTTP server บน `http://localhost:<port>/`, แล้วเปิด browser
+3. ใช้ `--no-open` เพื่อสร้าง preview โดยไม่เปิด browser (เหมาะกับการทดสอบ)
+4. รองรับ markdown, code, image, pdf, csv, json, html, และ directory
+5. สำหรับ directory preview สามารถกดเปิดไฟล์ใน directory ได้ผ่านลิงก์ `/raw/<filename>`
 
 ### 5. Build Standalone .exe
 
@@ -105,7 +107,8 @@ related:
 
 - preview สร้างไฟล์ชั่วคราวใน `os.tmpdir()`
 - สำหรับ compiled `.exe` จะหา preview assets จาก `dist/preview` ข้าง ๆ executable
-- ไฟล์ preview เปิดผ่าน `file://` โดยตรง ไม่ต้อง server
+- `preview` สตาร์ท HTTP server บน `http://localhost:<port>/` แล้วเปิด URL นั้น
+- `--no-open` จะสร้าง preview แต่ไม่เปิด browser
 
 ## Expected Outcome
 

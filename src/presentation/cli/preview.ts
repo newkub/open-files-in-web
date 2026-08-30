@@ -168,6 +168,20 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 		port: 0,
 		async fetch(req) {
 			const url = new URL(req.url);
+
+			if (url.pathname.startsWith("/raw/") && type === "directory") {
+				const rawName = decodeURIComponent(url.pathname.slice(5));
+				const rawPath = resolve(absPath, rawName);
+				if (!rawPath.startsWith(absPath)) {
+					return new Response("not allowed", { status: 403 });
+				}
+				const file = Bun.file(rawPath);
+				if (!(await file.exists())) {
+					return new Response("not found", { status: 404 });
+				}
+				return new Response(file);
+			}
+
 			const fileName = url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1));
 			const filePath = resolve(previewDir, fileName);
 			if (!filePath.startsWith(previewDir)) {

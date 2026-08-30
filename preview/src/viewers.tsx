@@ -50,7 +50,11 @@ export function HtmlViewer(props: { data: PreviewData }) {
 }
 
 export function ImageViewer(props: { data: PreviewData }) {
-	return <img src={props.data.src} alt={props.data.name} class="image-viewer" />;
+	return (
+		<div class="image-wrapper">
+			<img src={props.data.src} alt={props.data.name} class="image-viewer" />
+		</div>
+	);
 }
 
 export function PdfViewer(props: { data: PreviewData }) {
@@ -101,11 +105,30 @@ export function TextViewer(props: { data: PreviewData }) {
 	return <pre class="text-content">{props.data.content}</pre>;
 }
 
+function getItemIcon(name: string) {
+	if (!name.includes(".")) return "📁";
+	const ext = name.split(".").pop()?.toLowerCase() ?? "";
+	if (["png", "jpg", "jpeg", "gif", "bmp", "webp", "svg", "ico"].includes(ext)) return "🖼️";
+	if (["pdf"].includes(ext)) return "📄";
+	if (["md", "markdown"].includes(ext)) return "📝";
+	if (["html", "htm"].includes(ext)) return "🌐";
+	if (["csv", "json"].includes(ext)) return "📊";
+	if (["js", "ts", "tsx", "jsx", "py", "go", "rs", "c", "cpp", "java", "php", "rb"].includes(ext)) return "💻";
+	return "📎";
+}
+
 export function DirectoryList(props: { data: PreviewData }) {
 	return (
 		<ul class="directory-list">
 			<For each={props.data.items ?? []}>
-				{(item) => <li>{item}</li>}
+				{(item) => (
+					<li class="directory-item">
+						<span class="directory-icon">{getItemIcon(item)}</span>
+						<a class="directory-link" href={`./raw/${encodeURIComponent(item)}`} target="_blank" rel="noopener noreferrer">
+							{item}
+						</a>
+					</li>
+				)}
 			</For>
 		</ul>
 	);

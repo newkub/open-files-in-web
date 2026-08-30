@@ -93,7 +93,7 @@ The `preview` subcommand renders Markdown, code, images, PDFs, CSV, JSON, and mo
 bunx open-in-open-terminal preview D:\path\to\file.md
 ```
 
-It copies the preview assets to a temporary directory and opens `index.html` directly — no local server required.
+It copies the preview assets to a temporary directory, starts an embedded HTTP server on `http://localhost:<port>/`, and opens the browser. Use `--no-open` to generate the preview without launching the browser.
 
 ### Build standalone .exe
 
