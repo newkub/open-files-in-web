@@ -1,10 +1,10 @@
 ---
 trigger: glob
 globs:
-  - "**/src/**/*.ts"
-  - "**/src/**/*.tsx"
-  - "**/src/**/*.js"
-  - "**/src/**/*.jsx"
+  - "/src//*.ts"
+  - "/src//*.tsx"
+  - "/src//*.js"
+  - "/src//*.jsx"
 ---
 # Source Files
 

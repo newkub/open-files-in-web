@@ -1,11 +1,11 @@
 ---
 trigger: glob
 globs:
-  - "**/*.test.ts"
-  - "**/*.test.tsx"
-  - "**/*.spec.ts"
-  - "**/test/**/*.ts"
-  - "**/__tests__/**/*.ts"
+  - "/*.test.ts"
+  - "/*.test.tsx"
+  - "/*.spec.ts"
+  - "/test//*.ts"
+  - "/__tests__/**/*.ts"
 ---
 # Test Files
 
