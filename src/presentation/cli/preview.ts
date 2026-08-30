@@ -1,7 +1,7 @@
 import { cp, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, extname, resolve, dirname, join } from "node:path";
+import { basename, dirname, extname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import open from "open";
 
@@ -78,7 +78,7 @@ function findPackageRoot(start: string): string {
 	let current = start;
 	while (current !== dirname(current)) {
 		try {
-			if (statSync(join(current, "package.json")).isFile()) {
+			if (statSync(resolve(current, "package.json")).isFile()) {
 				return current;
 			}
 		} catch {
@@ -112,11 +112,47 @@ function isCompiledExe(): boolean {
 }
 
 function getDistPreviewDir(): string {
-	// Compiled .exe uses a virtual import.meta.url; the real .exe path is in process.execPath.
 	if (isCompiledExe()) {
 		return resolve(dirname(process.execPath), "preview");
 	}
 	return resolve(findPackageRoot(dirname(fileURLToPath(import.meta.url))), "dist/preview");
+}
+
+function toRawUrl(baseDir: string, targetPath: string): string {
+	const rel = relative(baseDir, targetPath).replace(/\\/g, "/");
+	const parts = rel
+		.split("/")
+		.filter(Boolean)
+		.map((p) => encodeURIComponent(p));
+	return "./raw/" + parts.join("/");
+}
+
+async function buildPreviewData(targetPath: string, baseDir: string): Promise<PreviewData> {
+	const s = await stat(targetPath);
+	const isDir = s.isDirectory();
+	const ext = isDir ? "" : extname(targetPath).toLowerCase().replace(/^\./, "");
+	const name = basename(targetPath);
+	const type: FileType = isDir ? "directory" : inferType(ext);
+	const data: PreviewData = { name, path: targetPath, type, ext };
+
+	if (type === "directory") {
+		data.items = await readdir(targetPath);
+	} else if (type === "image" || type === "pdf") {
+		data.src = toRawUrl(baseDir, targetPath);
+	} else {
+		data.content = await readFile(targetPath, "utf-8");
+	}
+
+	return data;
+}
+
+function injectDataScript(html: string, data: PreviewData): string {
+	const script = `<script>window.__DATA__=${JSON.stringify(data).replace(/</g, "\\u003c").replace(/>/g, "\\u003e")};</script>`;
+	const existing = /<script>window\.__DATA__=[\s\S]*?<\/script>/;
+	if (existing.test(html)) {
+		return html.replace(existing, script);
+	}
+	return html.replace("</head>", `${script}</head>`);
 }
 
 interface PreviewOptions {
@@ -127,9 +163,7 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 	const absPath = resolve(target);
 	const s = await stat(absPath);
 	const isDir = s.isDirectory();
-	const ext = isDir ? "" : extname(absPath).toLowerCase().replace(/^\./, "");
-	const name = basename(absPath);
-	const type: FileType = isDir ? "directory" : inferType(ext);
+	const baseDir = isDir ? absPath : dirname(absPath);
 
 	const distPreview = getDistPreviewDir();
 	const previewDir = resolve(tmpdir(), `open-files-preview-${Date.now()}`);
@@ -137,26 +171,14 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 	await mkdir(previewDir, { recursive: true });
 	await cp(distPreview, previewDir, { recursive: true });
 
-	const data: PreviewData = { name, path: absPath, type };
-
-	if (type === "directory") {
-		data.items = await readdir(absPath);
-	} else if (type === "image" || type === "pdf") {
-		const destFile = resolve(previewDir, name);
-		await cp(absPath, destFile);
-		data.src = `./${encodeURIComponent(name)}`;
-	} else {
-		data.content = await readFile(absPath, "utf-8");
-	}
+	const data = await buildPreviewData(absPath, baseDir);
 
 	const indexPath = resolve(previewDir, "index.html");
 	let html = await readFile(indexPath, "utf-8");
 	html = html.replace(/ crossorigin/g, "");
 	html = html.replace(/ type="module"/g, "");
 	html = html.replace(/<script src="(\.\/assets\/[^"]+\.js)"><\/script>/, '<script defer src="$1"></script>');
-
-	const dataScript = `<script>window.__DATA__=${JSON.stringify(data).replace(/</g, "\\u003c").replace(/>/g, "\\u003e")};</script>`;
-	html = html.replace("</head>", `${dataScript}</head>`);
+	html = injectDataScript(html, data);
 
 	await writeFile(indexPath, html);
 
@@ -169,10 +191,10 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 		async fetch(req) {
 			const url = new URL(req.url);
 
-			if (url.pathname.startsWith("/raw/") && type === "directory") {
+			if (url.pathname.startsWith("/raw/")) {
 				const rawName = decodeURIComponent(url.pathname.slice(5));
-				const rawPath = resolve(absPath, rawName);
-				if (!rawPath.startsWith(absPath)) {
+				const rawPath = resolve(baseDir, rawName);
+				if (!rawPath.startsWith(baseDir)) {
 					return new Response("not allowed", { status: 403 });
 				}
 				const file = Bun.file(rawPath);
@@ -182,7 +204,26 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 				return new Response(file);
 			}
 
-			const fileName = url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1));
+			if (url.pathname === "/") {
+				const subPath = url.searchParams.get("path");
+				if (subPath) {
+					const targetPath = resolve(baseDir, subPath);
+					if (!targetPath.startsWith(baseDir)) {
+						return new Response("not allowed", { status: 403 });
+					}
+					try {
+						const subData = await buildPreviewData(targetPath, baseDir);
+						const subHtml = injectDataScript(html, subData);
+						return new Response(subHtml, { headers: { "Content-Type": "text/html" } });
+					} catch {
+						return new Response("not found", { status: 404 });
+					}
+				}
+				const file = Bun.file(indexPath);
+				return new Response(file);
+			}
+
+			const fileName = decodeURIComponent(url.pathname.slice(1));
 			const filePath = resolve(previewDir, fileName);
 			if (!filePath.startsWith(previewDir)) {
 				return new Response("not allowed", { status: 403 });

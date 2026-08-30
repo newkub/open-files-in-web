@@ -1,6 +1,68 @@
-import { For, Show, createResource } from "solid-js";
+import { For, Show, createEffect, createResource, createSignal } from "solid-js";
 import { getHighlighter, escapeHtml, renderMarkdown } from "./render";
 import type { PreviewData } from "./types";
+
+async function copyText(text: string) {
+	try {
+		await navigator.clipboard.writeText(text);
+	} catch {
+		// fallback
+		const ta = document.createElement("textarea");
+		ta.value = text;
+		document.body.appendChild(ta);
+		ta.select();
+		document.execCommand("copy");
+		document.body.removeChild(ta);
+	}
+}
+
+function CopyButton(props: { text: string }) {
+	const [copied, setCopied] = createSignal(false);
+	const handleCopy = async () => {
+		await copyText(props.text);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 1500);
+	};
+	return (
+		<button class="copy-button" onClick={handleCopy} title="Copy to clipboard">
+			{copied() ? "Copied!" : "Copy"}
+		</button>
+	);
+}
+
+function decorateMarkdownCodeBlocks(container: HTMLElement) {
+	if (!container) return;
+	const blocks = container.querySelectorAll("pre");
+	for (const block of blocks) {
+		if (block.querySelector(".copy-button")) continue;
+		const code = block.querySelector("code");
+		if (!code) continue;
+		const text = code.textContent ?? "";
+		const wrapper = document.createElement("div");
+		wrapper.className = "code-block";
+		const header = document.createElement("div");
+		header.className = "code-block-header";
+		const lang = document.createElement("span");
+		lang.className = "code-block-lang";
+		lang.textContent = block.dataset.language || "code";
+		header.appendChild(lang);
+
+		const copy = document.createElement("button");
+		copy.className = "copy-button";
+		copy.textContent = "Copy";
+		copy.title = "Copy to clipboard";
+		copy.addEventListener("click", async () => {
+			await copyText(text);
+			copy.textContent = "Copied!";
+			setTimeout(() => (copy.textContent = "Copy"), 1500);
+		});
+		header.appendChild(copy);
+
+		block.parentElement?.insertBefore(wrapper, block);
+		wrapper.appendChild(header);
+		wrapper.appendChild(block);
+	}
+}
 
 export function MarkdownViewer(props: { data: PreviewData }) {
 	const [html] = createResource(
@@ -8,9 +70,18 @@ export function MarkdownViewer(props: { data: PreviewData }) {
 		async (content) => renderMarkdown(content ?? ""),
 	);
 
+	let bodyRef: HTMLDivElement | undefined;
+	createEffect(() => {
+		const h = html();
+		if (bodyRef && h) {
+			bodyRef.innerHTML = h;
+			decorateMarkdownCodeBlocks(bodyRef);
+		}
+	});
+
 	return (
 		<Show when={!html.loading} fallback={<div class="loading">Rendering markdown...</div>}>
-			<div class="markdown-body" prop:innerHTML={html() ?? ""} />
+			<div ref={(el) => (bodyRef = el)} class="markdown-body" />
 		</Show>
 	);
 }
@@ -33,7 +104,13 @@ export function CodeViewer(props: { data: PreviewData }) {
 
 	return (
 		<Show when={!html.loading} fallback={<pre class="text-content">{props.data.content}</pre>}>
-			<div class="code-viewer" prop:innerHTML={html() ?? ""} />
+			<div class="code-block">
+				<div class="code-block-header">
+					<span class="code-block-lang">{props.data.ext || "text"}</span>
+					<CopyButton text={props.data.content ?? ""} />
+				</div>
+				<div class="code-viewer" prop:innerHTML={html() ?? ""} />
+			</div>
 		</Show>
 	);
 }
@@ -124,7 +201,7 @@ export function DirectoryList(props: { data: PreviewData }) {
 				{(item) => (
 					<li class="directory-item">
 						<span class="directory-icon">{getItemIcon(item)}</span>
-						<a class="directory-link" href={`./raw/${encodeURIComponent(item)}`} target="_blank" rel="noopener noreferrer">
+						<a class="directory-link" href={`?path=${encodeURIComponent(item)}`}>
 							{item}
 						</a>
 					</li>

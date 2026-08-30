@@ -1,4 +1,4 @@
-import { createResource, Show } from "solid-js";
+import { createResource, createSignal, Show } from "solid-js";
 import { getData, renderMarkdown } from "./render";
 import {
 	CodeViewer,
@@ -21,6 +21,14 @@ interface MarkdownResult {
 function App() {
 	const data = getData();
 
+	const [theme, setTheme] = createSignal<"dark" | "light">(
+		window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark",
+	);
+
+	const toggleTheme = () => {
+		setTheme((t) => (t === "dark" ? "light" : "dark"));
+	};
+
 	const [markdown] = createResource(
 		() => (data.type === "markdown" ? data.content : null),
 		async (content) => {
@@ -37,12 +45,15 @@ function App() {
 	);
 
 	return (
-		<div class="app">
+		<div class={`app app--${theme()}`} data-theme={theme()}>
 			<header class="header">
 				<h1>{data.name}</h1>
 				<span class="meta">
 					{data.type} — {data.path}
 				</span>
+				<button class="theme-toggle" onClick={toggleTheme} title="Toggle theme">
+					{theme() === "dark" ? "☀️" : "🌙"}
+				</button>
 			</header>
 			<main class="main">
 				<Show when={data.type === "markdown" && markdown()?.toc}>

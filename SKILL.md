@@ -67,7 +67,7 @@ related:
 2. CLI จะสร้าง temp preview directory, copy assets, ฝัง metadata, สตาร์ท HTTP server บน `http://localhost:<port>/`, แล้วเปิด browser
 3. ใช้ `--no-open` เพื่อสร้าง preview โดยไม่เปิด browser (เหมาะกับการทดสอบ)
 4. รองรับ markdown, code, image, pdf, csv, json, html, และ directory
-5. สำหรับ directory preview สามารถกดเปิดไฟล์ใน directory ได้ผ่านลิงก์ `/raw/<filename>`
+5. สำหรับ directory preview สามารถกดเปิดไฟล์/โฟลเดอร์ย่อยใน directory ได้ผ่านลิงก์ `?path=<name>`
 
 ### 5. Build Standalone .exe
 
