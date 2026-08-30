@@ -159,9 +159,44 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 	html = html.replace("</head>", `${dataScript}</head>`);
 
 	await writeFile(indexPath, html);
-	if (!options.noOpen) {
-		await open(indexPath);
+
+	if (options.noOpen) {
+		return indexPath;
 	}
 
-	return indexPath;
+	const server = Bun.serve({
+		port: 0,
+		async fetch(req) {
+			const url = new URL(req.url);
+			const fileName = url.pathname === "/" ? "index.html" : decodeURIComponent(url.pathname.slice(1));
+			const filePath = resolve(previewDir, fileName);
+			if (!filePath.startsWith(previewDir)) {
+				return new Response("not allowed", { status: 403 });
+			}
+			const file = Bun.file(filePath);
+			if (!(await file.exists())) {
+				return new Response("not found", { status: 404 });
+			}
+			return new Response(file);
+		},
+	});
+
+	const serverUrl = server.url.href;
+
+	const stop = () => {
+		try {
+			server.stop(true);
+		} catch {
+			// already stopped
+		}
+	};
+
+	process.on("SIGINT", stop);
+	process.on("SIGTERM", stop);
+	process.on("exit", stop);
+
+	console.log(`Preview server: ${serverUrl}`);
+	await open(serverUrl);
+
+	return serverUrl;
 }
