@@ -99,7 +99,7 @@ const EXTENSION_TYPE_MAP: Record<string, FileType> = {
 	json: "json",
 };
 
-function inferType(ext: string): FileType {
+export function inferType(ext: string): FileType {
 	const e = ext.toLowerCase().replace(/^\./, "");
 	return (
 		EXTENSION_TYPE_MAP[e] ??

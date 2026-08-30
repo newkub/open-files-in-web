@@ -1,82 +1,63 @@
 ---
-name: @wrikka/open-web
-description: Workspace @wrikka/open-web
+name: open-files-in-web
+description: Standalone skill for opening local files and URLs in a web browser preview
 related:
-  - follow-create-devin-skills
-  - follow-skills-map
-  - improve-codebase
-  - optimize-codebase
-  - ask-me
+  - open-web
+  - open-in-devin
+  - idea-features
+  - create-files-in-os-temp
+  - visualize-in-web
+  - report-in-html
+  - create-mermaid-diagram
+  - create-report-in-dot-devin
+  - report-uxui-sketch
+  - draw-svg-image
+  - run-build
+  - follow-runtime-bun
 ---
 
 ## Goal
 
-Agent guidance for the `@wrikka/open-web` workspace.
+Agent guidance for the `open-files-in-web` skill workspace.
 
 ## Scope
 
-This workspace lives in `apps/cli/open-web` within the monorepo.
+This workspace is a standalone Bun/TypeScript package that provides the `open-in-open-terminal` CLI. It opens URLs, local files, and directories in the browser, and can render Markdown, code, CSV, JSON, images, PDFs, and directories as a SolidJS + TanStack Solid Router preview.
 
 ## Execute
 
-Run the following scripts from `apps/cli/open-web`:
+Run the following scripts from the workspace root:
 
 | Script | Command |
 |---|---|
 | `dev` | `bun run src/index.ts` |
-| `build` | `bunup` |
+| `build` | `bun run build` |
+| `build:preview` | `bunx vite build --config preview/vite.config.ts` |
+| `build:cli` | `bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly` |
 | `build:watch` | `bunup --watch` |
-| `typecheck` | `tsgo --noEmit` |
-| `typecheck:watch` | `tsgo --noEmit --watch` |
-| `lint` | `biome check` |
-| `lint:fix` | `biome check --write` |
-| `format` | `biome check --write` |
+| `typecheck` | `tsc --noEmit` |
+| `typecheck:watch` | `tsc --noEmit --watch` |
 | `test` | `vitest run` |
 | `test:watch` | `vitest` |
-| `test:coverage` | `vitest run --coverage` |
-| `test:integration` | `vitest run --config vitest.integration.config.ts` |
-| `test:e2e` | `vitest run --config vitest.e2e.config.ts` |
-| `scan` | `ast-grep scan` |
-| `check` | `bun run lint && bun run typecheck && bun run scan` |
-| `verify` | `bun run check && bun run test && bun run build` |
+| `verify` | `bun run typecheck && bun run test && bun run build` |
 | `deps:analyze` | `bunx depcheck` |
 | `clean` | `bunx rimraf node_modules dist` |
-| `security` | `bunx audit` |
-| `bench` | `bunx mitata` |
-| `prerelease` | `bun run build` |
-| `release` | `auto-it` |
-
-Moon tasks: `bench, build, build-watch, check, clean, deps-analyze, dev, format, lint, lint-fix, prerelease, release, scan, security, test, test-coverage, test-e2e, test-integration, test-watch, typecheck, typecheck-watch, verify`
 
 ### Architecture
 
 | Tech | Skill |
 |---|---|
-| (external) | `tech: /learn-from-web` |
 | typescript | `tech: /follow-typescript` |
-| bunup | `tech: /follow-bunup` |
-| vitest | `tech: /follow-vitest` |
-
-### Skills
-
-- follow-create-devin-skills
-- follow-skills-map
-- improve-codebase
-- optimize-codebase
-- ask-me
-
-### Workspaces
-
-- uses: `@wrikka/create-cli` (`apps/cli/create-cli`)
-- uses: `@wrikka/default-config` (`packages/lib/default-config`)
+| bun | `tech: /follow-runtime-bun` |
+| vite | `tech: /follow-tool-vite` |
 
 ## Rules
 
-- Keep under 250 lines.
+- Keep `SKILL.md` under 250 lines.
 - Map tech stack with `tech: /follow-<skill>`.
-- Map workspace dependencies in `uses:`.
 - Do not duplicate root conventions.
+- The compiled `.exe` expects a `preview/` directory next to it.
 
 ## Expected Outcome
 
-- `@wrikka/open-web` AGENTS.md is accurate and committed.
+- `open-files-in-web` AGENTS.md is accurate and committed.
