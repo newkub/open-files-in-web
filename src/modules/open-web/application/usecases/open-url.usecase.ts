@@ -1,8 +1,4 @@
-import {
-	getBrowserFlag,
-	normalizeUrl,
-	validateUrl,
-} from "#modules/open-web/domain";
+import { normalizeUrl, validateUrl } from "#modules/open-web/domain";
 import type { OpenUrlOptions, OpenUrlResult } from "#modules/open-web/types";
 import type { IOpenUrlPorts } from "../../ports";
 
@@ -12,23 +8,14 @@ export const createOpenUrlUseCase = (ports: IOpenUrlPorts) => {
 			return {
 				success: false,
 				url: options.url,
-				message: "URL is required",
+				message: "URL or path is required",
 			};
 		}
 
 		const normalizedUrl = normalizeUrl(options.url);
-		const browserFlags = getBrowserFlag(options.browser);
-		const platform = ports.getPlatform();
-
-		const command =
-			platform === "win32"
-				? "start"
-				: platform === "darwin"
-					? "open"
-					: "xdg-open";
 
 		try {
-			await ports.executeCommand(command, [...browserFlags, normalizedUrl]);
+			await ports.openUrl(normalizedUrl, options.browser);
 			return {
 				success: true,
 				url: normalizedUrl,

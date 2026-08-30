@@ -1,7 +1,5 @@
 export { createOpenUrlUseCase } from "./application";
 export {
-	getBrowserFlag,
-	getOpenCommand,
 	getPlatform,
 	normalizeUrl,
 	validateOptions,

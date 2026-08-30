@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"bin": {
-		"open-in-open-terminal": "./dist/index.js"
+		"open-in-open-terminal": "./dist/presentation/cli/cli.js"
 	},
 	"dependencies": {
 		"@shikijs/langs": "^4.4.3",
@@ -50,7 +50,7 @@
 	],
 	"scripts": {
 		"dev": "bun run src/index.ts",
-		"build": "bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun && tsc --emitDeclarationOnly",
+		"build": "bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly",
 		"build:watch": "bunup --watch",
 		"typecheck": "tsc --noEmit",
 		"typecheck:watch": "tsc --noEmit --watch",

@@ -19,6 +19,7 @@
 		"declaration": true,
 		"declarationMap": true,
 		"incremental": true,
+		"outDir": "dist",
 		"noEmit": false,
 		"noEmitOnError": true,
 		"skipLibCheck": true,

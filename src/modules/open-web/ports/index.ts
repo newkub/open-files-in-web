@@ -1,4 +1,6 @@
+import type { BrowserName } from "#modules/open-web/types";
+
 export interface IOpenUrlPorts {
-	readonly executeCommand: (command: string, args: string[]) => Promise<void>;
+	readonly openUrl: (url: string, browser?: BrowserName) => Promise<void>;
 	readonly getPlatform: () => string;
 }

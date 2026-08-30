@@ -58,7 +58,7 @@ related:
 
 > Goal: เปิด URL ใน browser
 
-1. ใช้ `bun open-files-in-web/dist/index.js <url>` หรือ `node open-files-in-web/dist/index.js <url>`
+1. ใช้ `bun open-files-in-web/dist/presentation/cli/cli.js <url>` หรือ `bunx open-in-open-terminal <url>`
 2. ถ้า CLI ไม่ทำงาน → ใช้ `open <url>` หรือ `start <url>` เป็น fallback
 3. ตรวจสอบว่า browser เปิด URL ถูกต้อง
 

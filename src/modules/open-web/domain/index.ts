@@ -1,8 +1,4 @@
-export {
-	getBrowserFlag,
-	getOpenCommand,
-	getPlatform,
-} from "./operations/get-platform-command";
+export { getPlatform } from "./operations/get-platform-command";
 export {
 	normalizeUrl,
 	validateOptions,

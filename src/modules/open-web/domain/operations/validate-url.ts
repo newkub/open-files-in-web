@@ -1,14 +1,19 @@
-import type { OpenUrlOptions } from "#modules/open-web/types";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+
+const isWebUrl = (s: string): boolean => /^https?:\/\//i.test(s);
+const isFileUrl = (s: string): boolean => /^file:\/\//i.test(s);
 
 export const validateUrl = (url: string): boolean => {
-	if (!url || url.trim().length === 0) return false;
-	return true;
+	return typeof url === "string" && url.trim().length > 0;
 };
 
 export const normalizeUrl = (url: string): string => {
-	return url.startsWith("http") ? url : `https://${url}`;
+	const s = url.trim();
+	if (isWebUrl(s) || isFileUrl(s)) return s;
+	return pathToFileURL(resolve(s)).href;
 };
 
-export const validateOptions = (options: OpenUrlOptions): boolean => {
+export const validateOptions = (options: { url: string }): boolean => {
 	return validateUrl(options.url);
 };
