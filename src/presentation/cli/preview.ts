@@ -143,6 +143,7 @@ export async function previewFile(target: string): Promise<string> {
 	let html = await readFile(indexPath, "utf-8");
 	html = html.replace(/ crossorigin/g, "");
 	html = html.replace(/ type="module"/g, "");
+	html = html.replace(/<script src="(\.\/assets\/[^"]+\.js)"><\/script>/, '<script defer src="$1"></script>');
 
 	const dataScript = `<script>window.__DATA__=${JSON.stringify(data).replace(/</g, "\\u003c").replace(/>/g, "\\u003e")};</script>`;
 	html = html.replace("</head>", `${dataScript}</head>`);
