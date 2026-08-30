@@ -54,6 +54,10 @@ Open web pages and documentation in browser — Cross-platform URL opener with b
 | ![icon](https://api.iconify.design/mdi:laptop.svg?color=%23f57c00&width=16) | Cross-Platform | Windows, macOS, and Linux support |
 | ![icon](https://api.iconify.design/mdi:console.svg?color=%237b1fa2&width=16) | CLI Interface | Command-line tool with commander |
 | ![icon](https://api.iconify.design/mdi:link-variant.svg?color=%23c2185b&width=16) | URL Normalization | Auto-prepend https:// if missing |
+| ![icon](https://api.iconify.design/mdi:file-document.svg?color=%23009688&width=16) | File & Folder Opening | Open local files and directories as `file://` URLs |
+| ![icon](https://api.iconify.design/mdi:eye.svg?color=%23ff9800&width=16) | Rich Preview | SolidJS + TanStack Solid Router previewer for Markdown, code, images, PDFs, CSV, JSON, and more |
+| ![icon](https://api.iconify.design/mdi:code-tags.svg?color=%23607d8b&width=16) | Syntax Highlight | Shiki-powered code highlighting with TOC sidebar |
+| ![icon](https://api.iconify.design/mdi:font.svg?color=%23e91e63&width=16) | Thai Font | Noto Sans Thai for Thai content |
 
 ## Usage
 
@@ -70,6 +74,31 @@ bunx open-in-open-terminal https://docs.bun.sh -b firefox
 │  $ bunx open-in-open-terminal https://github.com         │
 │  Opened: https://github.com                              │
 └──────────────────────────────────────────────────────────┘
+```
+
+### Open local files and folders
+
+Files and directories are normalized to `file://` URLs and opened with the platform's default handler.
+
+```bash
+bunx open-in-open-terminal D:\path\to\file.md
+bunx open-in-open-terminal D:\path\to\folder
+```
+
+### Preview files with Solid + TanStack
+
+The `preview` subcommand renders Markdown, code, images, PDFs, CSV, JSON, and more in a self-contained HTML preview.
+
+```bash
+bunx open-in-open-terminal preview D:\path\to\file.md
+```
+
+It copies the preview assets to a temporary directory and opens `index.html` directly — no local server required.
+
+### Build standalone .exe
+
+```bash
+bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-terminal.exe
 ```
 
 ### Usage via SDK

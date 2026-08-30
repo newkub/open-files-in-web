@@ -8,6 +8,7 @@
 	"dependencies": {
 		"@shikijs/langs": "^4.4.3",
 		"@shikijs/themes": "^4.4.3",
+		"@tanstack/solid-router": "^1.170.30",
 		"commander": "^15.0.0",
 		"cosmiconfig": "^10.0.0",
 		"markdown-it": "^15.0.0",
@@ -17,7 +18,8 @@
 		"markdown-it-toc-done-right": "^4.2.0",
 		"open": "^11.0.0",
 		"playwright-core": "^1.62.1",
-		"shiki": "^4.4.3"
+		"shiki": "^4.4.3",
+		"solid-js": "^1.9.15"
 	},
 	"devDependencies": {
 		"@shikijs/markdown-it": "^4.4.3",
@@ -26,6 +28,8 @@
 		"bunup": "^0.16.32",
 		"release-it": "^21.0.2",
 		"typescript": "^7.0.2",
+		"vite": "^8.2.2",
+		"vite-plugin-solid": "^2.11.14",
 		"vitest": "^4.1.11"
 	},
 	"main": "./dist/index.js",
@@ -50,7 +54,9 @@
 	],
 	"scripts": {
 		"dev": "bun run src/index.ts",
-		"build": "bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly",
+		"build:preview": "bunx vite build --config preview/vite.config.ts",
+		"build:cli": "bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly",
+		"build": "bun run build:preview && bun run build:cli",
 		"build:watch": "bunup --watch",
 		"typecheck": "tsc --noEmit",
 		"typecheck:watch": "tsc --noEmit --watch",
