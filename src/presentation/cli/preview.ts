@@ -89,16 +89,22 @@ function findPackageRoot(start: string): string {
 	throw new Error("Could not find package root");
 }
 
+const EXTENSION_TYPE_MAP: Record<string, FileType> = {
+	md: "markdown",
+	markdown: "markdown",
+	html: "html",
+	htm: "html",
+	pdf: "pdf",
+	csv: "csv",
+	json: "json",
+};
+
 function inferType(ext: string): FileType {
 	const e = ext.toLowerCase().replace(/^\./, "");
-	if (e === "md" || e === "markdown") return "markdown";
-	if (e === "html" || e === "htm") return "html";
-	if (imageExts.has(e)) return "image";
-	if (e === "pdf") return "pdf";
-	if (e === "csv") return "csv";
-	if (e === "json") return "json";
-	if (codeExts.has(e)) return "code";
-	return "text";
+	return (
+		EXTENSION_TYPE_MAP[e] ??
+		(imageExts.has(e) ? "image" : codeExts.has(e) ? "code" : "text")
+	);
 }
 
 function isCompiledExe(): boolean {

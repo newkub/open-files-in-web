@@ -16,7 +16,7 @@
 		"markdown-it-mathjax3": "^5.2.0",
 		"markdown-it-mermaid": "^0.2.5",
 		"markdown-it-toc-done-right": "^4.2.0",
-		"open": "^11.0.0",
+		"open": "^11.0.1",
 		"playwright-core": "^1.62.1",
 		"shiki": "^4.4.3",
 		"solid-js": "^1.9.15"
@@ -24,7 +24,7 @@
 	"devDependencies": {
 		"@shikijs/markdown-it": "^4.4.3",
 		"@types/bun": "^1.4.0",
-		"@types/markdown-it": "^14.1.2",
+		"@types/markdown-it": "^14.2.0",
 		"bunup": "^0.16.32",
 		"release-it": "^21.0.2",
 		"typescript": "^7.0.2",
