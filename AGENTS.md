@@ -4,7 +4,7 @@ description: Standalone skill for opening local files and URLs in a web browser 
 related:
   - open-web
   - open-in-devin
-  - idea-features
+  - deep-idea-features
   - create-files-in-os-temp
   - visualize-in-web
   - report-in-html

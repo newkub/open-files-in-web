@@ -5,7 +5,7 @@ argument-hint: "[path-or-url] | preview [path]"
 related:
   - open-web
   - open-in-devin
-  - idea-features
+  - deep-idea-features
   - create-files-in-os-temp
   - visualize-in-web
   - report-in-html
