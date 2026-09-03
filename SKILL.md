@@ -28,6 +28,7 @@ related:
 - ใช้ SolidJS + TanStack Solid Router previewer พร้อม TOC, syntax highlight, และ Noto Sans Thai
 - สามารถ build เป็น standalone `.exe` ได้
 - ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
+- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/deep-idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report-in-html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`, `/follow-runtime-bun`
 
 ## Execute
 
