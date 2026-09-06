@@ -1,6 +1,6 @@
 ---
 name: open-files-in-web
-description: เปิดไฟล์, directory, หรือ URL ใน web browser ด้วย open-in-open-terminal CLI พร้อม preview สวยงาม (static-first)
+description: เปิดไฟล์, directory หรือ URL ใน web browser ด้วย CLI พร้อม preview
 argument-hint: "[path-or-url] | preview [path]"
 related:
   - open-web
