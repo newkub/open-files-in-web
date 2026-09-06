@@ -3,7 +3,9 @@
 	"version": "1.0.0",
 	"type": "module",
 	"bin": {
-		"open-in-open-terminal": "./dist/presentation/cli/cli.js"
+		"open-in-open-terminal": "./dist/presentation/cli/cli.js",
+		"ofw": "./dist/presentation/cli/cli.js",
+		"open-files": "./dist/presentation/cli/cli.js"
 	},
 	"dependencies": {
 		"@shikijs/langs": "^4.4.3",
@@ -56,7 +58,8 @@
 		"dev": "bun run src/index.ts",
 		"build:preview": "bunx vite build --config preview/vite.config.ts",
 		"build:cli": "bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly",
-		"build": "bun run build:preview && bun run build:cli",
+		"build:compile": "bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-terminal.exe && bun -e \"Bun.write('dist/ofw.exe', Bun.file('dist/open-in-open-terminal.exe'))\"",
+		"build": "bun run build:preview && bun run build:cli && bun run build:compile",
 		"build:watch": "bunup --watch",
 		"typecheck": "tsc --noEmit",
 		"typecheck:watch": "tsc --noEmit --watch",

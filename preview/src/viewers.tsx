@@ -194,18 +194,38 @@ function getItemIcon(name: string) {
 	return "📎";
 }
 
-export function DirectoryList(props: { data: PreviewData }) {
+export function DirectoryList(props: {
+	data: PreviewData;
+	onOpen?: (name: string) => void;
+	path?: string[];
+}) {
+	const handleClick = (item: string) => (e: Event) => {
+		if (props.data.children) {
+			e.preventDefault();
+			props.onOpen?.(item);
+		}
+	};
+
 	return (
 		<ul class="directory-list">
 			<For each={props.data.items ?? []}>
-				{(item) => (
-					<li class="directory-item">
-						<span class="directory-icon">{getItemIcon(item)}</span>
-						<a class="directory-link" href={`?path=${encodeURIComponent(item)}`}>
-							{item}
-						</a>
-					</li>
-				)}
+				{(item) => {
+					const href = props.data.children
+						? `#/${[...(props.path ?? []), item].map(encodeURIComponent).join("/")}`
+						: `?path=${encodeURIComponent(item)}`;
+					return (
+						<li class="directory-item">
+							<span class="directory-icon">{getItemIcon(item)}</span>
+							<a
+								class="directory-link"
+								href={href}
+								onClick={handleClick(item)}
+							>
+								{item}
+							</a>
+						</li>
+					);
+				}}
 			</For>
 		</ul>
 	);

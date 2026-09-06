@@ -1,6 +1,6 @@
 ---
 name: open-files-in-web
-description: เปิดไฟล์, directory, หรือ URL ใน web browser ด้วย open-in-open-terminal CLI พร้อม preview สวยงาม
+description: เปิดไฟล์, directory, หรือ URL ใน web browser ด้วย open-in-open-terminal CLI พร้อม preview สวยงาม (static-first)
 argument-hint: "[path-or-url] | preview [path]"
 related:
   - open-web
@@ -19,7 +19,7 @@ related:
 
 ## Goal
 
-เปิดไฟล์ หรือ directory หรือ URL ใน web browser โดยแปลง local path เป็น `file://` URL หรือ render เป็น HTML preview ก่อน
+เปิดไฟล์ หรือ directory หรือ URL ใน web browser โดย local path จะถูกแปลงเป็น self-contained HTML preview แล้วเปิดด้วย `file://` โดยไม่ต้องสตาร์ท server เอง
 
 ## Scope
 
@@ -27,6 +27,7 @@ related:
 - รองรับ `file://` URL, ไฟล์ทั่วไป, markdown, code files, csv, json, html, image, pdf, และ directory
 - ใช้ SolidJS + TanStack Solid Router previewer พร้อม TOC, syntax highlight, และ Noto Sans Thai
 - สามารถ build เป็น standalone `.exe` ได้
+- มี global commands: `open-in-open-terminal`, `ofw`, `open-files` ใน `~/.bun/bin`
 - ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
 - ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/deep-idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report-in-html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`, `/follow-runtime-bun`
 
@@ -38,7 +39,7 @@ related:
 
 1. อ่าน `AGENTS.md` เพื่อทราบ conventions ของ project
 2. ระบุ target: ไฟล์, directory, หรือ URL
-3. ตรวจสอบว่า target มีอยู่จริงและเข้าถึงได
+3. ตรวจสอบว่า target มีอยู่จริงและเข้าถึงได้
 4. ตรวจสอบ `open-files-in-web/` มี CLI source ครบ
 
 ### 2. Build Open-Web CLI
@@ -47,7 +48,7 @@ related:
 
 1. cd เข้า `open-files-in-web/`
 2. รัน `bun install` เพื่อติดตั้ง dependencies
-3. รัน `bun run build` เพื่อสร้าง `dist/preview` และ `dist/presentation/cli/cli.js`
+3. รัน `bun run build` เพื่อสร้าง `dist/preview` และ `dist/presentation/cli/cli.js` และ `dist/open-in-open-terminal.exe`
 4. ถ้า build fail → ทำ `/resolve-errors` แล้ว retry สูงสุด 3 ครั้ง
 5. cd กลับมา skills directory
 
@@ -55,29 +56,45 @@ related:
 
 > Goal: เปิด URL, local file, หรือ directory ใน browser
 
-1. ถ้า target เป็น URL (`http://`, `https://`, `file://`) → ใช้ได้เลย
-2. ถ้า target เป็น absolute path → แปลงเป็น `file://` URL
-3. ถ้า target เป็น relative path → resolve เป็น absolute ก่อน แล้วแปลงเป็น `file://`
-4. ใช้ `bun dist/presentation/cli/cli.js <url-or-path>` หรือ `dist/open-in-open-terminal.exe <url-or-path>`
+1. ถ้า target เป็น URL (`http://`, `https://`, `file://`) → เปิดด้วย browser โดยตรง
+2. ถ้า target เป็น absolute/relative ไฟล์หรือ directory ที่มีอยู่จริง → สร้าง static HTML preview แล้วเปิดด้วย `file://`
+3. ใช้คำสั่งใดคำสั่งหนึ่ง:
+   - `bun dist/presentation/cli/cli.js <path-or-url>`
+   - `dist/open-in-open-terminal.exe <path-or-url>`
+   - `ofw <path-or-url>` (global alias)
+   - `open-files <path-or-url>` (global alias)
 
-### 4. Preview Local Files
+### 4. Preview Local Files (Static-First)
 
 > Goal: render ไฟล์เป็น HTML preview ก่อนเปิด
 
-1. ใช้ `bun dist/presentation/cli/cli.js preview <path>` หรือ `dist/open-in-open-terminal.exe preview <path>`
-2. CLI จะสร้าง temp preview directory, copy assets, ฝัง metadata, สตาร์ท HTTP server บน `http://localhost:<port>/`, แล้วเปิด browser
-3. ใช้ `--no-open` เพื่อสร้าง preview โดยไม่เปิด browser (เหมาะกับการทดสอบ)
-4. รองรับ markdown, code, image, pdf, csv, json, html, และ directory
-5. สำหรับ directory preview สามารถกดเปิดไฟล์/โฟลเดอร์ย่อยใน directory ได้ผ่านลิงก์ `?path=<name>`
+1. ใช้ bare argument หรือ explicit `preview` subcommand:
+   - `ofw <path>`
+   - `ofw preview <path>`
+2. Default จะสร้าง single self-contained HTML file ใน temp directory, inline JS/CSS, embed image/pdf เป็น base64 data URL, แล้วเปิดด้วย `file://`
+3. ไม่ต้องสตาร์ท HTTP server สำหรับการใช้งานทั่วไป
+4. ใช้ `--serve` เพื่อเปิด HTTP server mode (สำหรับไฟล์ใหญ่หรือต้องการ raw access)
+5. ใช้ `--no-open` เพื่อสร้าง preview โดยไม่เปิด browser
+6. รองรับ markdown, code, image, pdf, csv, json, html, และ directory
+7. สำหรับ directory preview สามารถกดเปิดไฟล์/โฟลเดอร์ย่อยได้ผ่าน hash-based navigation (`#/child/path`) ใน static mode
 
 ### 5. Build Standalone .exe
 
 > Goal: สร้าง executable สำหรับใช้โดยไม่ต้องมี bun
 
-1. รัน `bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-terminal.exe`
+1. `bun run build` จะสร้าง `dist/open-in-open-terminal.exe` และ `dist/ofw.exe` อัตโนมัติ
 2. ใช้ `.exe` เปิดไฟล์หรือ preview ได้ทันที
+3. compiled `.exe` จะหา preview assets จาก `dist/preview` ข้าง ๆ executable
 
-### 6. Verify And Report
+### 6. Global Shims
+
+> Goal: ให้เรียก CLI จากทุกที่ได้
+
+1. `open-in-open-terminal.cmd`, `ofw.cmd`, `open-files.cmd` ถูกสร้างใน `~/.bun/bin/`
+2. shims ชี้ไปยัง `dist/open-in-open-terminal.exe` หรือ `dist/ofw.exe` ใน `open-files-in-web/`
+3. ตรวจสอบว่า `~/.bun/bin` อยู่ใน `PATH`
+
+### 7. Verify And Report
 
 > Goal: ยืนยันว่าเปิดสำเร็จและไม่มี error
 
@@ -107,8 +124,9 @@ related:
 ### 4. Preview Output
 
 - preview สร้างไฟล์ชั่วคราวใน `os.tmpdir()`
-- สำหรับ compiled `.exe` จะหา preview assets จาก `dist/preview` ข้าง ๆ executable
-- `preview` สตาร์ท HTTP server บน `http://localhost:<port>/` แล้วเปิด URL นั้น
+- default คือ static single-file HTML (ไม่มี HTTP server)
+- image/pdf ใน static mode จะถูก embed เป็น base64 data URL
+- `--serve` จะสตาร์ท HTTP server บน `http://localhost:<port>/` แล้วเปิด URL นั้น
 - `--no-open` จะสร้าง preview แต่ไม่เปิด browser
 
 ## Expected Outcome

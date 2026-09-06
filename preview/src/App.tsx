@@ -12,17 +12,66 @@ import {
 	UnknownViewer,
 } from "./viewers";
 import "./styles.css";
+import type { PreviewData } from "./types";
 
 interface MarkdownResult {
 	content: string;
 	toc: string;
 }
 
+function resolveNode(
+	root: PreviewData,
+	segments: string[],
+): PreviewData | null {
+	let node = root;
+	for (const segment of segments) {
+		const next = node.children?.[decodeURIComponent(segment)];
+		if (!next) return null;
+		node = next;
+	}
+	return node;
+}
+
 function App() {
-	const data = getData();
+	const root = getData();
+
+	const [path, setPath] = createSignal<string[]>([]);
+
+	function readHash() {
+		const raw = location.hash.replace(/^#\/?/, "").trim();
+		return raw ? raw.split("/").filter(Boolean) : [];
+	}
+
+	const resolveCurrent = (segments: string[]) =>
+		resolveNode(root, segments) ?? root;
+
+	const [current, setCurrent] = createSignal<PreviewData>(
+		resolveCurrent(readHash()),
+	);
+
+	const updateFromHash = () => {
+		const segments = readHash();
+		setPath(segments);
+		setCurrent(resolveCurrent(segments));
+	};
+
+	window.addEventListener("hashchange", updateFromHash);
+
+	const navigateTo = (name: string) => {
+		const next = [...path(), name];
+		location.hash = `/${next.map(encodeURIComponent).join("/")}`;
+		updateFromHash();
+	};
+
+	const goHome = () => {
+		location.hash = "/";
+		updateFromHash();
+	};
 
 	const [theme, setTheme] = createSignal<"dark" | "light">(
-		window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark",
+		window.matchMedia?.("(prefers-color-scheme: light)").matches
+			? "light"
+			: "dark",
 	);
 
 	const toggleTheme = () => {
@@ -30,7 +79,7 @@ function App() {
 	};
 
 	const [markdown] = createResource(
-		() => (data.type === "markdown" ? data.content : null),
+		() => (current().type === "markdown" ? current().content : null),
 		async (content) => {
 			const raw = await renderMarkdown(content ?? "");
 			const doc = new DOMParser().parseFromString(raw, "text/html");
@@ -44,6 +93,8 @@ function App() {
 		},
 	);
 
+	const data = current();
+
 	return (
 		<div class={`app app--${theme()}`} data-theme={theme()}>
 			<header class="header">
@@ -55,6 +106,15 @@ function App() {
 					{theme() === "dark" ? "☀️" : "🌙"}
 				</button>
 			</header>
+			<Show when={path().length > 0}>
+				<nav class="breadcrumb">
+					<a href="#/" onClick={goHome}>
+						🏠 home
+					</a>
+					<span class="breadcrumb-sep">/</span>
+					<span class="breadcrumb-current">{data.name}</span>
+				</nav>
+			</Show>
 			<main class="main">
 				<Show when={data.type === "markdown" && markdown()?.toc}>
 					<aside class="toc" prop:innerHTML={markdown()?.toc ?? ""} />
@@ -65,7 +125,10 @@ function App() {
 							when={!markdown.loading}
 							fallback={<div class="loading">Rendering markdown...</div>}
 						>
-							<div class="markdown-body" prop:innerHTML={markdown()?.content ?? ""} />
+							<div
+								class="markdown-body"
+								prop:innerHTML={markdown()?.content ?? ""}
+							/>
 						</Show>
 					)}
 					{data.type === "code" && <CodeViewer data={data} />}
@@ -75,7 +138,13 @@ function App() {
 					{data.type === "csv" && <CsvTable data={data} />}
 					{data.type === "json" && <JsonTree data={data} />}
 					{data.type === "text" && <TextViewer data={data} />}
-					{data.type === "directory" && <DirectoryList data={data} />}
+					{data.type === "directory" && (
+						<DirectoryList
+							data={data}
+							onOpen={navigateTo}
+							path={path()}
+						/>
+					)}
 					{data.type === "unknown" && <UnknownViewer data={data} />}
 				</article>
 			</main>

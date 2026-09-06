@@ -18,6 +18,7 @@ export interface PreviewData {
 	content?: string;
 	src?: string;
 	items?: string[];
+	children?: Record<string, PreviewData>;
 }
 
 declare global {

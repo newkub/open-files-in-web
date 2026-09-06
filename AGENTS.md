@@ -31,9 +31,10 @@ Run the following scripts from the workspace root:
 | Script | Command |
 |---|---|
 | `dev` | `bun run src/index.ts` |
-| `build` | `bun run build` |
+| `build` | `bun run build` (build:preview + build:cli + build:compile) |
 | `build:preview` | `bunx vite build --config preview/vite.config.ts` |
 | `build:cli` | `bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly` |
+| `build:compile` | `bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-terminal.exe` |
 | `build:watch` | `bunup --watch` |
 | `typecheck` | `tsc --noEmit` |
 | `typecheck:watch` | `tsc --noEmit --watch` |
@@ -56,7 +57,11 @@ Run the following scripts from the workspace root:
 - Keep `SKILL.md` under 250 lines.
 - Map tech stack with `tech: /follow-<skill>`.
 - Do not duplicate root conventions.
+- Default preview mode is static single-file HTML (no HTTP server); use `--serve` to start a server.
+- Image/PDF resources are embedded as base64 data URLs in static mode.
+- Directory navigation uses hash-based client routing in static mode.
 - The compiled `.exe` expects a `preview/` directory next to it.
+- Global Windows command shims live in `~/.bun/bin`: `open-in-open-terminal.cmd`, `ofw.cmd`, `open-files.cmd`.
 
 ## Expected Outcome
 
