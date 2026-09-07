@@ -38,8 +38,8 @@ Run the following scripts from the workspace root:
 | `build:watch` | `bunup --watch` |
 | `typecheck` | `tsc --noEmit` |
 | `typecheck:watch` | `tsc --noEmit --watch` |
-| `test` | `vitest run` |
-| `test:watch` | `vitest` |
+| `test` | `bun test` |
+| `test:watch` | `bun test --watch` |
 | `verify` | `bun run typecheck && bun run test && bun run build` |
 | `deps:analyze` | `bunx depcheck` |
 | `clean` | `bunx rimraf node_modules dist` |

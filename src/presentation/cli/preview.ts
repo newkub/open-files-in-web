@@ -1,8 +1,7 @@
-import { cp, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, stat } from "node:fs/promises";
 import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, extname, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import open from "open";
 import { inferType, type FileType, type PreviewData } from "./file-types";
 
@@ -30,14 +29,14 @@ function findPackageRoot(start: string): string {
 }
 
 function isCompiledExe(): boolean {
-	return fileURLToPath(import.meta.url).includes("~BUN");
+	return import.meta.path.includes("~BUN");
 }
 
 function getDistPreviewDir(): string {
 	if (isCompiledExe()) {
 		return resolve(dirname(process.execPath), "preview");
 	}
-	return resolve(findPackageRoot(dirname(fileURLToPath(import.meta.url))), "dist/preview");
+	return resolve(findPackageRoot(dirname(import.meta.path)), "dist/preview");
 }
 
 function toRawUrl(baseDir: string, targetPath: string): string {
@@ -77,8 +76,8 @@ async function toBase64Src(targetPath: string, ext: string): Promise<string | un
 	try {
 		const s = await stat(targetPath);
 		if (!s.isFile() || s.size > MAX_SRC_SIZE) return undefined;
-		const content = await readFile(targetPath);
-		return `data:${mimeForFile(ext)};base64,${content.toString("base64")}`;
+		const content = await Bun.file(targetPath).arrayBuffer();
+		return `data:${mimeForFile(ext)};base64,${Buffer.from(content).toString("base64")}`;
 	} catch {
 		return undefined;
 	}
@@ -135,7 +134,7 @@ async function buildPreviewData(
 		}
 	} else if (shouldReadAsText(type, s.size)) {
 		try {
-			data.content = await readFile(targetPath, "utf-8");
+			data.content = await Bun.file(targetPath).text();
 		} catch {
 			data.type = "unknown";
 		}
@@ -167,7 +166,7 @@ async function inlineBundle(html: string, assetsDir: string, outPath: string): P
 	for (const match of cssMatches) {
 		const cssFile = resolve(assetsDir, match[1]);
 		try {
-			const css = await readFile(cssFile, "utf-8");
+			const css = await Bun.file(cssFile).text();
 			result = result.replace(match[0], `<style>${css.replace(/<\/style>/gi, "<\\/style>")}</style>`);
 		} catch {
 			// leave as-is
@@ -178,13 +177,13 @@ async function inlineBundle(html: string, assetsDir: string, outPath: string): P
 	const jsMatch = result.match(/<script[^>]*src="\.\/assets\/([^"]+\.js)"[^>]*>\s*<\/script>/);
 	if (jsMatch) {
 		const jsFile = resolve(assetsDir, jsMatch[1]);
-		const jsContent = await readFile(jsFile, "utf-8");
+		const jsContent = await Bun.file(jsFile).text();
 		const safeContent = jsContent.replace(/<\/script>/gi, "<\\/script>");
 		const tag = `<script>${safeContent}</script>`;
 		result = result.replace(jsMatch[0], tag);
 	}
 
-	await writeFile(outPath, result, "utf-8");
+	await Bun.write(outPath, result);
 }
 
 interface PreviewOptions {
@@ -211,7 +210,7 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 		const assetsDir = resolve(distPreview, "assets");
 		const indexPath = resolve(previewDir, "index.html");
 		const distIndexPath = resolve(distPreview, "index.html");
-		let html = await readFile(distIndexPath, "utf-8");
+		let html = await Bun.file(distIndexPath).text();
 		html = html.replace(/ crossorigin/g, "");
 		html = html.replace(/<script[^>]*src="\.\/assets\/[^"]+"[^>]*>\s*<\/script>/, (m) => {
 			// keep the tag as-is for inlineBundle to find
@@ -233,12 +232,12 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 	await cp(distPreview, previewDir, { recursive: true });
 
 	const indexPath = resolve(previewDir, "index.html");
-	let html = await readFile(indexPath, "utf-8");
+	let html = await Bun.file(indexPath).text();
 	html = html.replace(/ crossorigin/g, "");
 	html = html.replace(/ type="module"/g, "");
 	html = html.replace(/<script src="(\.\/assets\/[^"]+\.js)"><\/script>/, '<script defer src="$1"></script>');
 	html = injectDataScript(html, data);
-	await writeFile(indexPath, html);
+	await Bun.write(indexPath, html);
 
 	const server = Bun.serve({
 		port: 0,
