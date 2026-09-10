@@ -5,7 +5,7 @@ argument-hint: "[path-or-url] | preview [path]"
 related:
   - open-web
   - open-in-devin
-  - deep-idea-features
+  - idea-features
   - create-files-in-os-temp
   - visualize-in-web
   - report-in-html
@@ -14,7 +14,6 @@ related:
   - report-uxui-sketch
   - draw-svg-image
   - run-build
-  - follow-runtime-bun
 ---
 
 ## Goal
@@ -29,7 +28,7 @@ related:
 - สามารถ build เป็น standalone `.exe` ได้
 - มี global commands: `open-in-open-terminal`, `ofw`, `open-files` ใน `~/.bun/bin`
 - ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
-- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/deep-idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report-in-html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`, `/follow-runtime-bun`
+- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report-in-html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`
 
 ## Execute
 
