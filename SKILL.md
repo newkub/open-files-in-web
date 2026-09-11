@@ -47,9 +47,10 @@ related:
 
 1. cd เข้า `open-files-in-web/`
 2. รัน `bun install` เพื่อติดตั้ง dependencies
-3. รัน `bun run build` เพื่อสร้าง `dist/preview` และ `dist/presentation/cli/cli.js` และ `dist/open-in-open-terminal.exe`
+3. รัน `bun run build` (=`build:preview` + `build:cli` + `build:compile`) เพื่อสร้าง `dist/preview`, `dist/presentation/cli/cli.js`, `dist/open-in-open-terminal.exe` และ `dist/ofw.exe`
 4. ถ้า build fail → ทำ `/resolve-errors` แล้ว retry สูงสุด 3 ครั้ง
-5. cd กลับมา skills directory
+5. ใช้ `bun run verify` เพื่อรัน typecheck + test + build รวมครั้งเดียว (ตาม `package.json` scripts, verified 2026-09-12)
+6. cd กลับมา skills directory
 
 ### 3. Open URL Or Local Path
 
@@ -60,8 +61,10 @@ related:
 3. ใช้คำสั่งใดคำสั่งหนึ่ง:
    - `bun dist/presentation/cli/cli.js <path-or-url>`
    - `dist/open-in-open-terminal.exe <path-or-url>`
+   - `dist/ofw.exe <path-or-url>`
    - `ofw <path-or-url>` (global alias)
    - `open-files <path-or-url>` (global alias)
+4. options จาก CLI (`commander` ^15.0.0, verified 2026-09-12): `-b, --browser <browser>` (`chrome`/`firefox`/`safari`/`edge`/`default`), `-s, --serve`, `--no-open`
 
 ### 4. Preview Local Files (Static-First)
 
