@@ -24,3 +24,4 @@ globs:
 13. Test public APIs thoroughly
 14. Keep test execution fast
 15. Use coverage reports to identify gaps
+

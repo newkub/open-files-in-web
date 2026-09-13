@@ -3,12 +3,12 @@ name: open-files-in-web
 description: เปิดไฟล์, directory หรือ URL ใน web browser ด้วย CLI พร้อม preview
 argument-hint: "[path-or-url] | preview [path]"
 related:
-  - open-web
+  - open
   - open-in-devin
-  - idea-features
+  - idea
   - create-files-in-os-temp
   - visualize-in-web
-  - report-in-html
+  - report
   - create-mermaid-diagram
   - create-report-in-dot-devin
   - report-uxui-sketch
@@ -27,8 +27,8 @@ related:
 - ใช้ SolidJS + TanStack Solid Router previewer พร้อม TOC, syntax highlight, และ Noto Sans Thai
 - สามารถ build เป็น standalone `.exe` ได้
 - มี global commands: `open-in-open-terminal`, `ofw`, `open-files` ใน `~/.bun/bin`
-- ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
-- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report-in-html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`
+- ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open web` ถ้าต้องการเปิด URL ธรรมดา
+- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/idea features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`
 
 ## Execute
 
@@ -138,3 +138,4 @@ related:
 - ไม่มี broken references หลังการ build
 - มีรายงาน target และ URL ที่ใช้เปิด
 - มี next action ชัดเจนหลังใช้งาน
+

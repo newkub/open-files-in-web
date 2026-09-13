@@ -1,6 +1,6 @@
 > ![Status](https://img.shields.io/badge/status-in_development-red)
 
-# @wrikka/open-web
+# @wrikka/open web
 
 Open web pages and documentation in browser — Cross-platform URL opener with browser selection, URL validation, and platform-aware command execution.
 
@@ -27,13 +27,13 @@ Open web pages and documentation in browser — Cross-platform URL opener with b
 
 ## Get Started
 
-1. Install — `bun add @wrikka/open-web`
+1. Install — `bun add @wrikka/open web`
    ```bash
-   bun add @wrikka/open-web
+   bun add @wrikka/open web
    ```
 2. Build — `bun run build`
    ```bash
-   cd apps/cli/open-web && bun run build
+   cd apps/cli/open web && bun run build
    ```
 3. Run Dev — `bun run dev`
    ```bash
@@ -104,11 +104,11 @@ bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-term
 ### Usage via SDK
 
 ```bash
-bun add @wrikka/open-web
+bun add @wrikka/open web
 ```
 
 ```typescript
-import { createBrowserAdapter, createOpenUrlUseCase } from '@wrikka/open-web';
+import { createBrowserAdapter, createOpenUrlUseCase } from '@wrikka/open web';
 
 const adapter = createBrowserAdapter();
 const openUrl = createOpenUrlUseCase(adapter);
@@ -125,3 +125,4 @@ console.log(result.success, result.message);
 |-----|-------------|---------|---------|
 | `createOpenUrlUseCase(ports)` | Create URL opener use case | `ports`: browser adapter | — |
 | `openUrl({ url, browser })` | Open URL in browser | `url`, `browser`: chrome, firefox, safari, edge, default | `browser=default` |
+

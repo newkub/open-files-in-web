@@ -2,18 +2,18 @@
 name: open-files-in-web
 description: Standalone skill for opening local files and URLs in a web browser preview
 related:
-  - open-web
+  - open
   - open-in-devin
-  - deep-idea-features
+  - idea
   - create-files-in-os-temp
   - visualize-in-web
-  - report-in-html
+  - report
   - create-mermaid-diagram
   - create-report-in-dot-devin
   - report-uxui-sketch
   - draw-svg-image
   - run-build
-  - follow-runtime-bun
+  - use-bun-native-api
 ---
 
 ## Goal
@@ -48,8 +48,8 @@ Run the following scripts from the workspace root:
 
 | Tech | Skill |
 |---|---|
-| typescript | `tech: /follow-typescript` |
-| bun | `tech: /follow-runtime-bun` |
+| typescript | `tech: /follow-lang-typescript` |
+| bun | `tech: /use-bun-native-api` |
 | vite | `tech: /follow-tool-vite` |
 
 ## Rules
@@ -66,3 +66,4 @@ Run the following scripts from the workspace root:
 ## Expected Outcome
 
 - `open-files-in-web` AGENTS.md is accurate and committed.
+

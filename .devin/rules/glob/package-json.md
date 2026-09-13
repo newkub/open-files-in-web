@@ -20,3 +20,4 @@ globs:
 13. Keep dependencies minimal and focused
 14. Use `devDependencies` for development tools
 15. Use `peerDependencies` for optional integrations
+

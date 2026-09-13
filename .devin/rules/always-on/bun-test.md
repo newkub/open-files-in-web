@@ -17,3 +17,4 @@ trigger: always_on
 12. Use `test.skip` to skip tests temporarily
 13. Use `test.only` to run specific tests during development
 14. Use `bun test --coverage` for coverage reports
+

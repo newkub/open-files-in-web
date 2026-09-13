@@ -18,3 +18,4 @@ trigger: always_on
 13. Configure `dts` for automatic type declaration generation
 14. Use `bunup` for fast bundling with Bun's native bundler
 15. Use `bunup` instead of `tsup` or `tsdown` when using Bun runtime
+

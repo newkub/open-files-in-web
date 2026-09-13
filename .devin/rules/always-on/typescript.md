@@ -18,3 +18,4 @@ trigger: always_on
 13. Use `infer` keyword for type inference in conditional types
 14. Use `keyof` and `typeof` operators for type queries
 15. Use `ReturnType`, `Parameters`, `InstanceType` utility types
+

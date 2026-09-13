@@ -18,3 +18,4 @@ trigger: always_on
 13. Use `shiki.BUNDLED_THEMES` for available themes
 14. Handle loading errors gracefully
 15. Use async/await for highlighter initialization
+

@@ -18,3 +18,4 @@ trigger: always_on
 13. Use `.configureOutput()` for custom output
 14. Provide clear error messages
 15. Test CLI commands with integration tests
+

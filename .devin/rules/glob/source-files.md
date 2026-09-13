@@ -23,3 +23,4 @@ globs:
 13. Use `constants/` for constants
 14. Use `errors/` for error definitions
 15. Use proper import aliases
+
