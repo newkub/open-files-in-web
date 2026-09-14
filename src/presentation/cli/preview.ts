@@ -189,6 +189,8 @@ async function inlineBundle(html: string, assetsDir: string, outPath: string): P
 interface PreviewOptions {
 	noOpen?: boolean;
 	serve?: boolean;
+	/** Explicit single-file static HTML (temp file via file://) */
+	static?: boolean;
 }
 
 export async function previewFile(target: string, options: PreviewOptions = {}): Promise<string> {
@@ -202,7 +204,9 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 
 	await mkdir(previewDir, { recursive: true });
 
-	const staticMode = !options.serve;
+	// Default: serve a real site on localhost — file:// breaks fonts/CDN/
+	// history routing and sniffs charsets badly (garbled Thai etc.)
+	const staticMode = options.static === true;
 	const data = await buildPreviewData(absPath, { baseDir, static: staticMode });
 
 	if (staticMode) {
@@ -254,7 +258,14 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 				if (!(await file.exists())) {
 					return new Response("not found", { status: 404 });
 				}
-				return new Response(file);
+				const ext = extname(rawPath).slice(1).toLowerCase();
+				const isText =
+					inferType(ext) !== "image" && inferType(ext) !== "pdf";
+				return new Response(file, {
+					headers: isText
+						? { "Content-Type": `text/plain; charset=utf-8` }
+						: {},
+				});
 			}
 
 			if (url.pathname === "/") {
@@ -267,13 +278,17 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 					try {
 						const subData = await buildPreviewData(targetPath, { baseDir, static: false });
 						const subHtml = injectDataScript(html, subData);
-						return new Response(subHtml, { headers: { "Content-Type": "text/html" } });
+						return new Response(subHtml, {
+							headers: { "Content-Type": "text/html; charset=utf-8" },
+						});
 					} catch {
 						return new Response("not found", { status: 404 });
 					}
 				}
 				const file = Bun.file(indexPath);
-				return new Response(file);
+				return new Response(file, {
+					headers: { "Content-Type": "text/html; charset=utf-8" },
+				});
 			}
 
 			const fileName = decodeURIComponent(url.pathname.slice(1));
@@ -284,6 +299,23 @@ export async function previewFile(target: string, options: PreviewOptions = {}):
 			const file = Bun.file(filePath);
 			if (!(await file.exists())) {
 				return new Response("not found", { status: 404 });
+			}
+			// guess text vs asset — text files need explicit utf-8 or
+			// the browser sniffs and garbles non-ASCII
+			const ext = extname(filePath).slice(1).toLowerCase();
+			const textExts = new Set(["css", "js", "json", "txt", "map", "html"]);
+			if (textExts.has(ext)) {
+				const type =
+					ext === "css"
+						? "text/css"
+						: ext === "js"
+							? "text/javascript"
+							: ext === "json" || ext === "map"
+								? "application/json"
+								: "text/plain";
+				return new Response(file, {
+					headers: { "Content-Type": `${type}; charset=utf-8` },
+				});
 			}
 			return new Response(file);
 		},
