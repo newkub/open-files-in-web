@@ -11,7 +11,7 @@ related:
   - report
   - create-mermaid-diagram
   - create-report-in-dot-devin
-  - report-uxui-sketch
+  - report-uxui
   - draw-svg-image
   - run-build
 ---
@@ -28,7 +28,7 @@ related:
 - สามารถ build เป็น standalone `.exe` ได้
 - มี global commands: `open-in-open-terminal`, `ofw`, `open-files` ใน `~/.bun/bin`
 - ไม่ใช่สำหรับเปิด website โดยตรง — ใช้ `/open-web` ถ้าต้องการเปิด URL ธรรมดา
-- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui-sketch`, `/draw-svg-image`, `/run-build`
+- ดูเพิ่มเติมสำหรับ related skills: `/open-in-devin`, `/idea-features`, `/create-files-in-os-temp`, `/visualize-in-web`, `/report html`, `/create-mermaid-diagram`, `/create-report-in-dot-devin`, `/report-uxui`, `/draw-svg-image`, `/run-build`
 
 ## Execute
 

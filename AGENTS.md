@@ -10,7 +10,7 @@ related:
   - report
   - create-mermaid-diagram
   - create-report-in-dot-devin
-  - report-uxui-sketch
+  - report-uxui
   - draw-svg-image
   - run-build
   - use-bun-native-api
