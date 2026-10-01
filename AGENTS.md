@@ -2,7 +2,6 @@
 name: open-files-in-web
 description: Standalone skill for opening local files and URLs in a web browser preview
 related:
-  - open
   - open-in-devin
   - idea
   - create-files-in-os-temp

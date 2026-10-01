@@ -3,7 +3,6 @@ name: open-files-in-web
 description: เปิดไฟล์, directory หรือ URL ใน web browser ด้วย CLI พร้อม preview
 argument-hint: "[path-or-url] | preview [path]"
 related:
-  - open
   - open-in-devin
   - idea
   - create-files-in-os-temp
