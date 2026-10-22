@@ -16,18 +16,16 @@ export async function renderMarkdown(content: string): Promise<string> {
 		highlight: (code, lang) => {
 			try {
 				return highlighter.codeToHtml(code, {
-					lang: (lang || undefined) as any,
+					lang: lang || "text",
 					theme: "github-dark",
 				});
 			} catch {
-				return highlighter.codeToHtml(code, {
-					theme: "github-dark",
-				});
+				return `<pre class="shiki"><code>${escapeHtml(code)}</code></pre>`;
 			}
 		},
 	});
 
-	md.use(anchor, { permalink: false });
+	md.use(anchor);
 	md.use(toc, { listType: "ul" });
 
 	return md.render(`[[toc]]\n\n${content}`);

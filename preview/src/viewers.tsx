@@ -109,7 +109,7 @@ export function CodeViewer(props: { data: PreviewData }) {
 					<span class="code-block-lang">{props.data.ext || "text"}</span>
 					<CopyButton text={props.data.content ?? ""} />
 				</div>
-				<div class="code-viewer" prop:innerHTML={html() ?? ""} />
+				<div class="code-viewer" innerHTML={html() ?? ""} />
 			</div>
 		</Show>
 	);

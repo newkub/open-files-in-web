@@ -3,7 +3,7 @@ trigger: always_on
 ---
 # TypeScript
 
-1. Use `tsgo` for type checking instead of `tsc` when available
+1. Use `bun check` for type checking instead of `tsc --noEmit` or `tsgo`
 2. All workspaces with `tsconfig.json` must extend from `@wrikka/default-config`
 3. Enable strict mode in TypeScript configuration
 4. Use proper type annotations for function parameters and return types

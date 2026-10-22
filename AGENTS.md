@@ -35,8 +35,8 @@ Run the following scripts from the workspace root:
 | `build:cli` | `bun build src/index.ts src/presentation/cli/cli.ts --outdir dist --target bun --external open && tsc --emitDeclarationOnly` |
 | `build:compile` | `bun build --compile src/presentation/cli/cli.ts --outfile dist/open-in-open-terminal.exe` |
 | `build:watch` | `bunup --watch` |
-| `typecheck` | `tsc --noEmit` |
-| `typecheck:watch` | `tsc --noEmit --watch` |
+| `typecheck` | `bun check` |
+| `typecheck:watch` | `bun run --watch typecheck` |
 | `test` | `bun test` |
 | `test:watch` | `bun test --watch` |
 | `verify` | `bun run typecheck && bun run test && bun run build` |

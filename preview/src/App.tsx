@@ -117,7 +117,7 @@ function App() {
 			</Show>
 			<main class="main">
 				<Show when={data.type === "markdown" && markdown()?.toc}>
-					<aside class="toc" prop:innerHTML={markdown()?.toc ?? ""} />
+					<aside class="toc" innerHTML={markdown()?.toc ?? ""} />
 				</Show>
 				<article class={`content type-${data.type}`}>
 					{data.type === "markdown" && (
@@ -127,7 +127,7 @@ function App() {
 						>
 							<div
 								class="markdown-body"
-								prop:innerHTML={markdown()?.content ?? ""}
+								innerHTML={markdown()?.content ?? ""}
 							/>
 						</Show>
 					)}
